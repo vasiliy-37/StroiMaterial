@@ -97,8 +97,7 @@ export class CartService {
   private readonly store = inject(CatalogStoreService);
 
   private readonly api = environment.apiUrl;
-
-
+  private readonly useMocks = environment.useMocks;
 
   private readonly cartSignal = signal<CartView>(EMPTY_CART);
 
@@ -148,9 +147,13 @@ export class CartService {
 
 
 
+  private localCart(): boolean {
+    return this.useMocks || this.guestMode();
+  }
+
   refresh() {
 
-    if (!this.auth.isLoggedIn()) {
+    if (this.useMocks || !this.auth.isLoggedIn()) {
 
       this.guestMode.set(true);
 
@@ -184,7 +187,7 @@ export class CartService {
 
   addItem(productId: string, quantity = 1) {
 
-    if (!this.auth.isLoggedIn()) {
+    if (this.useMocks || !this.auth.isLoggedIn()) {
 
       return this.addGuestItem(productId, quantity);
 
@@ -210,7 +213,7 @@ export class CartService {
 
   updateItem(itemId: string, quantity: number) {
 
-    if (this.guestMode()) {
+    if (this.localCart()) {
 
       const productId = itemId.replace(/^guest-/, '');
 
@@ -232,7 +235,7 @@ export class CartService {
 
   removeItem(itemId: string) {
 
-    if (this.guestMode()) {
+    if (this.localCart()) {
 
       const productId = itemId.replace(/^guest-/, '');
 
@@ -254,7 +257,7 @@ export class CartService {
 
   clear() {
 
-    if (this.guestMode()) {
+    if (this.localCart()) {
 
       this.writeGuestCart([]);
 
@@ -277,6 +280,12 @@ export class CartService {
 
 
   onLogin(): void {
+
+    if (this.useMocks) {
+      this.guestMode.set(true);
+      this.syncGuestCartView();
+      return;
+    }
 
     const guestItems = this.readGuestCart();
 
