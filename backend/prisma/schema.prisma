@@ -1,0 +1,183 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum ProductBadge {
+  sale
+  pro
+}
+
+enum PromotionType {
+  sale
+  promo
+  clearance
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String?  @unique
+  phone     String?  @unique
+  password  String
+  name      String?
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart   Cart?
+  orders Order[]
+}
+
+model Product {
+  id           String        @id
+  name         String
+  nameEn       String
+  price        Decimal       @db.Decimal(12, 2)
+  oldPrice     Decimal?      @db.Decimal(12, 2)
+  image        String
+  badge        ProductBadge?
+  stock        Int           @default(100)
+  stockQty     Int           @default(100)
+  stockLabel   String
+  stockLabelEn String
+  brand        String
+  category     String
+  active       Boolean       @default(true)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  promotions PromotionProduct[]
+  cartItems  CartItem[]
+  orderItems OrderItem[]
+
+  @@index([category])
+  @@index([brand])
+  @@index([active])
+}
+
+model SiteService {
+  id        String   @id
+  icon      String
+  titleRu   String
+  titleEn   String
+  descRu    String
+  descEn    String
+  active    Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Promotion {
+  id              String         @id
+  titleRu         String
+  titleEn         String
+  descriptionRu   String
+  descriptionEn   String
+  discountPercent Int?
+  type            PromotionType
+  startDate       DateTime       @db.Date
+  endDate         DateTime       @db.Date
+  active          Boolean        @default(true)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  products PromotionProduct[]
+}
+
+model PromotionProduct {
+  promotionId String
+  productId   String
+  promotion   Promotion @relation(fields: [promotionId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@id([promotionId, productId])
+}
+
+model ContentEntry {
+  id        String   @id @default(cuid())
+  key       String
+  lang      String   @db.VarChar(5)
+  value     String   @db.Text
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, lang])
+  @@index([lang])
+}
+
+model SiteSettings {
+  id        String   @id @default("default")
+  heroImage String
+  updatedAt DateTime @updatedAt
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String  @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int     @default(1)
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id          String      @id @default(cuid())
+  orderNumber String      @unique
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  status      OrderStatus @default(PENDING)
+  total       Decimal     @db.Decimal(12, 2)
+  address     String?
+  phone       String?
+  comment     String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  items OrderItem[]
+
+  @@index([userId])
+  @@index([status])
+}
+
+model OrderItem {
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Decimal @db.Decimal(12, 2)
+  name      String
+  nameEn    String
+  image     String
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@index([orderId])
+}

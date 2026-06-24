@@ -1,0 +1,31 @@
+<div class="admin-page">
+  <h1 class="headline-lg">Тексты сайта</h1>
+  <p class="text-muted admin-page__hint">Изменения применяются на сайте сразу после сохранения.</p>
+
+  <div class="card admin-form admin-content">
+    <h2 class="headline-md">Баннер главной — фото</h2>
+    <label>URL изображения<input class="input" [ngModel]="heroUrl()" (ngModelChange)="heroUrl.set($event)" /></label>
+    <button type="button" class="btn btn--primary" (click)="saveHero()">Сохранить фото</button>
+  </div>
+
+  <div class="admin-content__layout">
+    <div class="card admin-content__keys">
+      @for (item of keys; track item.key) {
+        <button
+          type="button"
+          class="admin-content__key"
+          [class.admin-content__key--active]="selectedKey() === item.key"
+          (click)="selectKey(item.key)"
+        >{{ item.label }}</button>
+      }
+    </div>
+
+    <div class="card admin-form">
+      <h2 class="headline-md">Редактирование</h2>
+      <p class="label-sm text-muted">Ключ: {{ selectedKey() }}</p>
+      <label>Текст (RU)<textarea class="input admin-textarea" rows="3" [ngModel]="ruText()" (ngModelChange)="ruText.set($event)"></textarea></label>
+      <label>Текст (EN)<textarea class="input admin-textarea" rows="3" [ngModel]="enText()" (ngModelChange)="enText.set($event)"></textarea></label>
+      <button type="button" class="btn btn--primary" (click)="save()">Сохранить текст</button>
+    </div>
+  </div>
+</div>

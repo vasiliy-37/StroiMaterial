@@ -1,0 +1,59 @@
+<div class="admin-page">
+  <div class="admin-page__head">
+    <h1 class="headline-lg">Акции и распродажи</h1>
+    <button type="button" class="btn btn--primary" (click)="startAdd()">+ Создать акцию</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="card admin-form">
+      <h2 class="headline-md">{{ editing() ? 'Редактировать' : 'Новая акция' }}</h2>
+      <div class="admin-form__grid">
+        <label>Название (RU)<input class="input" [ngModel]="form().titleRu" (ngModelChange)="patch('titleRu', $event)" /></label>
+        <label>Название (EN)<input class="input" [ngModel]="form().titleEn" (ngModelChange)="patch('titleEn', $event)" /></label>
+        <label>Описание (RU)<input class="input" [ngModel]="form().descriptionRu" (ngModelChange)="patch('descriptionRu', $event)" /></label>
+        <label>Описание (EN)<input class="input" [ngModel]="form().descriptionEn" (ngModelChange)="patch('descriptionEn', $event)" /></label>
+        <label>Тип
+          <select class="input" [ngModel]="form().type" (ngModelChange)="patch('type', $event)">
+            @for (t of types; track t.value) { <option [value]="t.value">{{ t.label }}</option> }
+          </select>
+        </label>
+        <label>Скидка %<input class="input" type="number" [ngModel]="form().discountPercent ?? 0" (ngModelChange)="patch('discountPercent', +$event)" /></label>
+        <label>Начало<input class="input" type="date" [ngModel]="form().startDate" (ngModelChange)="patch('startDate', $event)" /></label>
+        <label>Конец<input class="input" type="date" [ngModel]="form().endDate" (ngModelChange)="patch('endDate', $event)" /></label>
+        <label class="admin-form__check"><input type="checkbox" [ngModel]="form().active" (ngModelChange)="patch('active', $event)" /> Активна</label>
+      </div>
+      <div class="admin-form__products">
+        <p class="label-md">Привязать к товарам (пусто = все):</p>
+        <div class="admin-form__product-chips">
+          @for (p of store.allProducts(); track p.id) {
+            <button
+              type="button"
+              class="admin-chip"
+              [class.admin-chip--active]="isProductSelected(p.id)"
+              (click)="toggleProduct(p.id)"
+            >{{ p.name }}</button>
+          }
+        </div>
+      </div>
+      <div class="admin-form__actions">
+        <button type="button" class="btn btn--primary" (click)="save()">Сохранить</button>
+        <button type="button" class="btn btn--outline" (click)="showForm.set(false)">Отмена</button>
+      </div>
+    </div>
+  }
+
+  <div class="admin-cards">
+    @for (p of store.allPromotions(); track p.id) {
+      <div class="card admin-card-item">
+        <span class="admin-badge admin-badge--promo">{{ p.type }}</span>
+        <h3>{{ p.titleRu }}</h3>
+        <p class="text-muted">{{ p.descriptionRu }}</p>
+        <p class="label-sm">−{{ p.discountPercent }}% · {{ p.startDate }} — {{ p.endDate }}</p>
+        <div class="admin-card-item__actions">
+          <button type="button" class="btn btn--outline" (click)="startEdit(p)">Изменить</button>
+          <button type="button" class="btn--icon" (click)="remove(p.id)"><span class="material-symbols-outlined">delete</span></button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

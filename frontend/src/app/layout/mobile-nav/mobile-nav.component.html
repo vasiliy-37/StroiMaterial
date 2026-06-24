@@ -1,0 +1,28 @@
+<nav class="mobile-nav">
+  <a routerLink="/" routerLinkActive="mobile-nav__link--active" [routerLinkActiveOptions]="{ exact: true }" class="mobile-nav__link">
+    <span class="material-symbols-outlined filled">home</span>
+    <span>{{ t('nav.home') }}</span>
+  </a>
+  <a routerLink="/catalog" routerLinkActive="mobile-nav__link--active" class="mobile-nav__link">
+    <span class="material-symbols-outlined">menu</span>
+    <span>{{ t('mobile.catalog') }}</span>
+  </a>
+  <a routerLink="/favorites" routerLinkActive="mobile-nav__link--active" class="mobile-nav__link mobile-nav__link--favorites">
+    <span class="material-symbols-outlined">favorite</span>
+    <span>{{ t('mobile.favorites') }}</span>
+    @if (favorites.count() > 0) {
+      <span class="badge-count">{{ favorites.count() }}</span>
+    }
+  </a>
+  <a routerLink="/cart" routerLinkActive="mobile-nav__link--active" class="mobile-nav__link mobile-nav__link--cart">
+    <span class="material-symbols-outlined">shopping_cart</span>
+    <span>{{ t('nav.cart') }}</span>
+        @if (cart.itemCount() > 0) {
+          <span class="badge-count" appCartBadgePulse>{{ cart.itemCount() }}</span>
+        }
+  </a>
+  <a routerLink="/profile" routerLinkActive="mobile-nav__link--active" class="mobile-nav__link">
+    <span class="material-symbols-outlined">person</span>
+    <span>{{ t('nav.profile') }}</span>
+  </a>
+</nav>

@@ -1,0 +1,39 @@
+.order-success {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+}
+
+.order-success__card {
+  max-width: 520px;
+  width: 100%;
+  padding: 48px 32px;
+  text-align: center;
+  animation: fade-in-up 0.34s var(--ease-out);
+}
+
+.order-success__icon {
+  margin-bottom: 24px;
+  animation: success-pop 0.5s var(--ease-out);
+
+  .material-symbols-outlined {
+    font-size: 72px;
+    color: var(--color-secondary);
+  }
+}
+
+.order-success__number {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--color-primary);
+  margin: 24px 0;
+}
+
+.order-success__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 32px;
+}

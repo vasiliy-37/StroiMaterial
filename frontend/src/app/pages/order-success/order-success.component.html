@@ -1,0 +1,14 @@
+<div class="container page order-success">
+  <div class="order-success__card card">
+    <div class="order-success__icon">
+      <span class="material-symbols-outlined filled">check_circle</span>
+    </div>
+    <h1 class="headline-lg">{{ t('orderSuccess.title') }}</h1>
+    <p class="body-lg text-muted">{{ t('orderSuccess.text') }}</p>
+    <p class="order-success__number">№ {{ orderNumber }}</p>
+    <div class="order-success__actions">
+      <a routerLink="/profile/orders" class="btn btn--primary">{{ t('orderSuccess.toOrders') }}</a>
+      <a routerLink="/" class="btn btn--outline">{{ t('orderSuccess.toHome') }}</a>
+    </div>
+  </div>
+</div>

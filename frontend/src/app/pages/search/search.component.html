@@ -1,0 +1,33 @@
+<div class="container page">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ t('search.title') }}</span>
+  </nav>
+
+  <h1 class="headline-xl">{{ t('search.title') }}</h1>
+  @if (query) {
+    <p class="body-md text-muted search__query">«{{ query }}» — {{ results().length }} {{ t('search.results') }}</p>
+  }
+
+  @if (loading()) {
+    <div class="grid-products" style="margin-top: 24px">
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <app-product-card-skeleton />
+      }
+    </div>
+  } @else if (results().length) {
+    <div class="grid-products" style="margin-top: 24px">
+      @for (product of results(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  } @else {
+    <div class="empty-state card">
+      <span class="material-symbols-outlined">search_off</span>
+      <h2>{{ t('search.empty') }}</h2>
+      <p>{{ t('search.emptyHint') }}</p>
+      <a routerLink="/catalog" class="btn btn--primary">{{ t('home.toCatalog') }}</a>
+    </div>
+  }
+</div>

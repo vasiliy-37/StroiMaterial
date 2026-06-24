@@ -1,0 +1,22 @@
+@let flags = layoutFlags();
+
+@if (!flags.minimal && !flags.admin) {
+  <app-header />
+  <app-navigation />
+}
+
+<main
+  class="app-main"
+  [class.app-main--minimal]="flags.minimal"
+  [class.page--with-mobile-nav]="!flags.minimal && !flags.admin"
+>
+  <router-outlet />
+</main>
+
+@if (!flags.minimal && !flags.admin) {
+  <app-footer />
+  <app-mobile-nav />
+}
+
+<app-toast />
+<app-confirm-dialog />

@@ -1,0 +1,80 @@
+<header class="header">
+  <div class="container header__inner">
+    <div class="header__left">
+      <a routerLink="/" class="header__logo">
+        <span class="header__logo-build">Build</span><span class="header__logo-pro">Pro</span>
+      </a>
+    </div>
+
+    <div class="header__center">
+      <button type="button" class="header__location">
+        <span class="material-symbols-outlined">location_on</span>
+        <span>{{ t('header.location') }}</span>
+      </button>
+      <form class="header__search" (ngSubmit)="onSearch()">
+        <input
+          class="input header__search-input"
+          type="search"
+          [placeholder]="t('header.searchPlaceholder')"
+          [(ngModel)]="searchQuery"
+          name="search"
+        />
+        <button type="submit" class="header__search-btn">
+          <span class="material-symbols-outlined">search</span>
+          <span class="header__search-label">{{ t('header.find') }}</span>
+        </button>
+      </form>
+    </div>
+
+    <div class="header__right">
+      <div class="header__phone">
+        <span class="header__phone-num">{{ t('header.phone') }}</span>
+        <span class="header__phone-hint">{{ t('header.phoneHint') }}</span>
+      </div>
+
+      <div class="header__lang" [class.header__lang--open]="i18n.toggleDropdown()">
+        <button type="button" class="header__lang-trigger" (click)="toggleLangMenu()">
+          <span class="header__flag" [class]="'header__flag--' + i18n.currentLanguage().flag"></span>
+          <span class="header__lang-code">{{ i18n.currentLanguage().code | uppercase }}</span>
+          <span class="material-symbols-outlined">expand_more</span>
+        </button>
+        @if (i18n.toggleDropdown()) {
+          <ul class="header__lang-menu">
+            @for (lang of i18n.languages; track lang.code) {
+              <li>
+                <button
+                  type="button"
+                  class="header__lang-option"
+                  [class.header__lang-option--active]="lang.code === i18n.lang()"
+                  (click)="selectLang(lang.code)"
+                >
+                  <span class="header__flag" [class]="'header__flag--' + lang.flag"></span>
+                  <span>{{ lang.label }}</span>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <a routerLink="/profile" class="header__action">
+        <span class="material-symbols-outlined">person</span>
+        <span>{{ t('nav.profile') }}</span>
+      </a>
+      <a routerLink="/favorites" class="header__action header__action--favorites">
+        <span class="material-symbols-outlined">favorite</span>
+        <span>{{ t('nav.favorites') }}</span>
+        @if (favorites.count() > 0) {
+          <span class="badge-count">{{ favorites.count() }}</span>
+        }
+      </a>
+      <a routerLink="/cart" class="header__action header__action--cart">
+        <span class="material-symbols-outlined">shopping_cart</span>
+        <span>{{ t('nav.cart') }}</span>
+        @if (cart.itemCount() > 0) {
+          <span class="badge-count" appCartBadgePulse>{{ cart.itemCount() }}</span>
+        }
+      </a>
+    </div>
+  </div>
+</header>

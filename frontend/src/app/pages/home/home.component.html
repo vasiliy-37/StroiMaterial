@@ -1,0 +1,100 @@
+<div class="container page home">
+  @if (store.error()) {
+    <p class="home__error text-error">{{ store.error() }}</p>
+  }
+
+  <section class="home__hero">
+    <div class="home__hero-main" [style.backgroundImage]="'url(' + heroImage() + ')'">
+      <div class="home__hero-overlay">
+        <div class="home__hero-content">
+          <h1 class="headline-xl text-on-primary">{{ t('home.heroTitle') }}</h1>
+          <p class="body-lg text-on-primary">{{ t('home.heroText') }}</p>
+          <div class="home__hero-actions">
+            <a routerLink="/catalog" class="btn btn--primary">{{ t('home.toCatalog') }}</a>
+            <a routerLink="/catalog" class="btn btn--secondary">{{ t('home.more') }}</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="home__hero-side">
+      <div class="card home__side-card">
+        <div class="home__side-card__content">
+          <span class="material-symbols-outlined home__side-card__icon text-secondary">handyman</span>
+          <h3 class="headline-md home__side-card__title">{{ t('home.rental') }}</h3>
+          <p class="body-md text-muted home__side-card__text">{{ t('home.rentalText') }}</p>
+        </div>
+        <a routerLink="/catalog" class="home__side-link">{{ t('home.rent') }} →</a>
+      </div>
+      <div class="card home__side-card home__side-card--dark">
+        <div class="home__side-card__content">
+          <span class="material-symbols-outlined home__side-card__icon">engineering</span>
+          <h3 class="headline-md home__side-card__title text-on-primary">{{ t('home.services') }}</h3>
+          <p class="body-md home__side-card__text home__side-card__text--muted">{{ t('home.servicesText') }}</p>
+        </div>
+        <a routerLink="/catalog" class="home__side-link home__side-link--light">{{ t('home.forPro') }} →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="home__services">
+    <h2 class="headline-lg">{{ t('home.servicesGrid') }}</h2>
+    <div class="grid-4">
+      @for (item of serviceItems(); track item.id) {
+        <div class="card home__service-item">
+          <span class="material-symbols-outlined text-secondary">{{ item.icon }}</span>
+          <h4 class="label-md">{{ serviceTitle(item) }}</h4>
+          <p class="text-muted">{{ serviceDesc(item) }}</p>
+        </div>
+      }
+    </div>
+  </section>
+
+  @if (promotions().length) {
+    <section class="home__promotions">
+      <div class="section-header">
+        <div>
+          <h2 class="headline-lg">{{ t('home.promotions') }}</h2>
+          <p class="body-md text-muted">{{ t('home.promotionsHint') }}</p>
+        </div>
+      </div>
+      <div class="home__promo-grid">
+        @for (promo of promotions(); track promo.id) {
+          <a routerLink="/catalog" class="card home__promo-card">
+            <span class="home__promo-badge">{{ promo.type }}</span>
+            @if (promo.discountPercent) {
+              <span class="home__promo-discount">−{{ promo.discountPercent }}%</span>
+            }
+            <h3 class="headline-md">{{ promoTitle(promo) }}</h3>
+            <p class="text-muted">{{ promoDesc(promo) }}</p>
+            <span class="home__promo-date text-muted">
+              {{ t('home.promoUntil') }} {{ formatDate(promo.endDate) }}
+            </span>
+          </a>
+        }
+      </div>
+    </section>
+  }
+
+  <section>
+    <div class="section-header">
+      <div>
+        <h2 class="headline-lg">{{ t('home.friendlyPrices') }}</h2>
+        <p class="body-md text-muted">{{ t('home.friendlyHint') }}</p>
+      </div>
+      <a routerLink="/catalog" class="text-secondary label-md">{{ t('home.viewAll') }} →</a>
+    </div>
+    <div class="grid-products">
+      @if (store.loading()) {
+        @for (_ of [1, 2, 3, 4]; track $index) {
+          <app-product-card-skeleton />
+        }
+      } @else if (!products().length) {
+        <p class="text-muted">Товаров пока нет</p>
+      } @else {
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" />
+        }
+      }
+    </div>
+  </section>
+</div>

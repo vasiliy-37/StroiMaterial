@@ -1,0 +1,77 @@
+<div class="admin-page">
+  <div class="admin-page__head">
+    <h1 class="headline-lg">Товары</h1>
+    <button type="button" class="btn btn--primary" (click)="startAdd()">+ Добавить товар</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="card admin-form">
+        <h2 class="headline-md">{{ editing() ? 'Редактировать' : 'Новый товар' }}</h2>
+        <div class="admin-form__grid">
+          <label>Название (RU)<input class="input" [ngModel]="form().name" (ngModelChange)="patch('name', $event)" /></label>
+          <label>Название (EN)<input class="input" [ngModel]="form().nameEn" (ngModelChange)="patch('nameEn', $event)" /></label>
+          <label>Цена, ₽<input class="input" type="number" [ngModel]="form().price" (ngModelChange)="patch('price', +$event)" /></label>
+          <label>Старая цена<input class="input" type="number" [ngModel]="form().oldPrice ?? ''" (ngModelChange)="patch('oldPrice', +$event || 0)" /></label>
+          <label>Бренд<input class="input" [ngModel]="form().brand" (ngModelChange)="patch('brand', $event)" /></label>
+          <label>Категория
+            <select class="input" [ngModel]="form().category" (ngModelChange)="patch('category', $event)">
+              @for (c of categories; track c) { <option [value]="c">{{ c }}</option> }
+            </select>
+          </label>
+          <label>Остаток %<input class="input" type="number" [ngModel]="form().stock" (ngModelChange)="patch('stock', +$event)" /></label>
+          <label>Кол-во, шт<input class="input" type="number" [ngModel]="form().stockQty ?? 100" (ngModelChange)="patch('stockQty', +$event)" /></label>
+          <label>Бейдж
+            <select class="input" [ngModel]="form().badge ?? ''" (ngModelChange)="patch('badge', $event || undefined)">
+              <option value="">Нет</option>
+              <option value="sale">SALE</option>
+              <option value="pro">Pro-Grade</option>
+            </select>
+          </label>
+          <label class="admin-form__full">URL фото<input class="input" [ngModel]="form().image" (ngModelChange)="patch('image', $event)" /></label>
+          <label class="admin-form__check"><input type="checkbox" [ngModel]="form().active" (ngModelChange)="patch('active', $event)" /> Активен на сайте</label>
+        </div>
+        <div class="admin-form__actions">
+          <button type="button" class="btn btn--primary" (click)="save()">Сохранить</button>
+          @if (form().id) {
+            <a [routerLink]="['/product', form().id]" target="_blank" class="btn btn--outline">На сайте ↗</a>
+          }
+          <button type="button" class="btn btn--outline" (click)="cancel()">Отмена</button>
+        </div>
+      </div>
+  }
+
+  <div class="card admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Фото</th>
+          <th>Название</th>
+          <th>Цена</th>
+          <th>Бренд</th>
+          <th>Статус</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of store.allProducts(); track p.id) {
+          <tr>
+            <td><app-product-image [src]="p.image" [alt]="p.name" imgClass="admin-table__thumb" /></td>
+            <td>{{ p.name }}</td>
+            <td>{{ p.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</td>
+            <td>{{ p.brand }}</td>
+            <td>
+              <span class="admin-badge" [class.admin-badge--off]="!p.active">{{ p.active ? 'Активен' : 'Скрыт' }}</span>
+            </td>
+            <td class="admin-table__actions">
+              <a [routerLink]="['/product', p.id]" target="_blank" class="btn--icon" title="На сайте">
+                <span class="material-symbols-outlined">open_in_new</span>
+              </a>
+              <button type="button" class="btn--icon" (click)="startEdit(p)"><span class="material-symbols-outlined">edit</span></button>
+              <button type="button" class="btn--icon" (click)="remove(p.id)"><span class="material-symbols-outlined">delete</span></button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

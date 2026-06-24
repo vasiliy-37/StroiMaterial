@@ -1,0 +1,53 @@
+<section class="order-detail">
+  @if (loading()) {
+    <p class="order-detail__loading text-muted">Загрузка...</p>
+  } @else if (order(); as o) {
+    <nav class="breadcrumbs">
+      <a routerLink="/profile/orders">{{ t('orders.title') }}</a>
+      <span class="material-symbols-outlined">chevron_right</span>
+      <span class="current">{{ t('orderDetail.title') }} {{ o.orderNumber }}</span>
+    </nav>
+
+    <div class="order-detail__head">
+      <h1 class="headline-xl">{{ t('orderDetail.title') }} № {{ o.orderNumber }}</h1>
+      <span class="order-detail__status">{{ statusLabel(o.status) }}</span>
+    </div>
+
+    <div class="order-detail__grid">
+      <section class="card order-detail__items">
+        <h2 class="headline-md">Состав заказа</h2>
+        @for (item of o.items ?? []; track item.id) {
+          <div class="order-detail__row">
+            <app-product-image [src]="item.image" [alt]="itemName(item)" imgClass="order-detail__thumb" />
+            <div class="order-detail__row-info">
+              <a [routerLink]="['/product', item.productId]">{{ itemName(item) }}</a>
+              <span>{{ item.quantity }} × {{ formatPrice(item.price) }}</span>
+            </div>
+            <strong class="order-detail__line-total">{{ lineTotal(item.price, item.quantity) }}</strong>
+          </div>
+        }
+      </section>
+
+      <aside class="card order-detail__aside">
+        <h3 class="headline-md">{{ t('orderDetail.status') }}</h3>
+        <p class="order-detail__timeline">
+          <span class="material-symbols-outlined filled text-secondary">check_circle</span>
+          <span>{{ formatDate(o.createdAt) }}</span>
+        </p>
+        @if (o.address) {
+          <h3 class="headline-md">Доставка</h3>
+          <p class="order-detail__address">{{ o.address }}</p>
+        }
+        <div class="order-detail__total">
+          <span>{{ t('cart.total') }}</span>
+          <span class="order-detail__total-value">{{ formatPrice(o.total) }}</span>
+        </div>
+      </aside>
+    </div>
+  } @else {
+    <div class="card order-detail__empty">
+      <p>Заказ не найден</p>
+      <a routerLink="/profile/orders" class="btn btn--outline">{{ t('orders.title') }}</a>
+    </div>
+  }
+</section>

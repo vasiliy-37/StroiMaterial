@@ -1,0 +1,38 @@
+<section class="orders">
+  <h1 class="headline-xl orders__title">{{ t('orders.title') }}</h1>
+
+  @if (loading()) {
+    <p class="orders__loading text-muted">Загрузка...</p>
+  } @else if (error()) {
+    <div class="card orders__empty">
+      <p class="text-error">{{ error() }}</p>
+      <button type="button" class="btn btn--outline" (click)="retry()">Повторить</button>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="card orders__empty">
+      <p>Заказов пока нет</p>
+      <a routerLink="/catalog" class="btn btn--primary">{{ t('nav.catalog') }}</a>
+    </div>
+  } @else {
+    <div class="orders__list">
+      @for (order of orders(); track order.id) {
+        <article class="card orders__item">
+          <div class="orders__head">
+            <div class="orders__summary">
+              <h2 class="orders__number">№ {{ order.orderNumber }}</h2>
+              <p class="orders__date">{{ formatDate(order.createdAt) }}</p>
+            </div>
+            <span class="orders__status">{{ statusLabel(order.status) }}</span>
+          </div>
+          <div class="orders__meta">
+            <span>{{ itemCountLabel(order.items?.length ?? 0) }}</span>
+            <strong>{{ formatPrice(order.total) }}</strong>
+          </div>
+          <a [routerLink]="['/profile/orders', order.id]" class="btn btn--outline orders__details">
+            {{ t('orders.details') }}
+          </a>
+        </article>
+      }
+    </div>
+  }
+</section>

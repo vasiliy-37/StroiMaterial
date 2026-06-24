@@ -1,0 +1,65 @@
+<div class="auth">
+  <div class="auth__card card">
+    <a routerLink="/" class="auth__logo">BuildPro</a>
+    <h1 class="headline-lg">
+      {{ mode === 'login' ? t('auth.title') : t('auth.registerTitle') }}
+    </h1>
+
+    @if (error()) {
+      <p class="auth__error text-error" role="alert">{{ error() }}</p>
+    }
+
+    <form class="auth__form" (ngSubmit)="submit()">
+      @if (mode === 'register') {
+        <label class="label-md">{{ t('auth.name') }}</label>
+        <input
+          class="input"
+          type="text"
+          [(ngModel)]="name"
+          name="name"
+          [placeholder]="t('auth.name')"
+          autocomplete="name"
+        />
+      }
+      <label class="label-md">{{ t('auth.email') }}</label>
+      <input
+        class="input"
+        type="email"
+        [(ngModel)]="email"
+        name="email"
+        placeholder="email@example.com"
+        autocomplete="email"
+        required
+      />
+      <label class="label-md">{{ t('auth.password') }}</label>
+      <input
+        class="input"
+        type="password"
+        [(ngModel)]="password"
+        name="password"
+        minlength="6"
+        autocomplete="{{ mode === 'login' ? 'current-password' : 'new-password' }}"
+        required
+      />
+      @if (mode === 'register') {
+        <label class="label-md">{{ t('auth.confirmPassword') }}</label>
+        <input
+          class="input"
+          type="password"
+          [(ngModel)]="confirmPassword"
+          name="confirmPassword"
+          minlength="6"
+          autocomplete="new-password"
+          required
+        />
+      }
+      <button type="submit" class="btn btn--primary auth__submit" [disabled]="loading()">
+        {{ mode === 'login' ? t('auth.login') : t('auth.register') }}
+      </button>
+    </form>
+
+    <button type="button" class="auth__toggle" (click)="toggleMode()">
+      {{ mode === 'login' ? t('auth.toggleRegister') : t('auth.toggleLogin') }}
+    </button>
+  </div>
+</div>

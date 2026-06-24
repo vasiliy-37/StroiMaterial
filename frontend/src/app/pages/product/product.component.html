@@ -1,0 +1,84 @@
+<div class="container page product-page">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <a routerLink="/catalog">{{ t('catalog.title') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ name() || '...' }}</span>
+  </nav>
+
+  @if (store.loading()) {
+    <div class="grid-products">
+      @for (_ of [1, 2, 3, 4]; track $index) {
+        <app-product-card-skeleton />
+      }
+    </div>
+  } @else if (notFound()) {
+    <div class="empty-state card">
+      <h2>Товар не найден</h2>
+      <p class="text-muted">Возможно, он удалён или скрыт</p>
+      <a routerLink="/catalog" class="btn btn--primary">{{ t('nav.catalog') }}</a>
+    </div>
+  } @else if (product(); as p) {
+    <div class="product-page__grid card animate-fade-in-up">
+      <div class="product-page__gallery">
+        <app-product-image [src]="p.image" [alt]="name()" />
+      </div>
+      <div class="product-page__info">
+        <span class="product-page__brand">{{ p.brand }}</span>
+        <h1 class="headline-lg">{{ name() }}</h1>
+        <div class="product-page__price-block">
+          @if (p.oldPrice) {
+            <span class="product-page__old-price">{{ p.oldPrice | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+          }
+          <span class="product-page__price">{{ p.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        <p class="body-md text-muted">{{ t('product.inStock') }} · {{ stockLabel() }}</p>
+        <div class="product-page__actions">
+          <button
+            type="button"
+            class="btn btn--primary product-page__add-btn"
+            [class.product-page__add-btn--success]="addSuccess()"
+            [disabled]="adding()"
+            (click)="addToCart()"
+          >
+            @if (adding()) {
+              <span class="spinner" aria-hidden="true"></span>
+              {{ t('product.adding') }}
+            } @else {
+              {{ t('product.addToCart') }}
+            }
+          </button>
+          <button
+            type="button"
+            class="btn--icon product-page__fav-btn"
+            [class.product-page__fav--active]="isFavorite()"
+            [attr.aria-label]="t(isFavorite() ? 'aria.unfavorite' : 'aria.favorite')"
+            (click)="toggleFavorite()"
+          >
+            <span class="material-symbols-outlined" [class.filled]="isFavorite()">favorite</span>
+          </button>
+        </div>
+        <div class="product-page__specs">
+          <h3 class="headline-md">{{ t('product.specs') }}</h3>
+          <dl>
+            <div><dt>Бренд</dt><dd>{{ p.brand }}</dd></div>
+            <div><dt>Категория</dt><dd>{{ p.category }}</dd></div>
+            <div><dt>Наличие</dt><dd>{{ p.stock }}%</dd></div>
+          </dl>
+        </div>
+      </div>
+    </div>
+
+    @if (related().length) {
+      <section>
+        <h2 class="headline-md" style="margin-bottom: 24px">Похожие товары</h2>
+        <div class="grid-products">
+          @for (item of related(); track item.id) {
+            <app-product-card [product]="item" />
+          }
+        </div>
+      </section>
+    }
+  }
+</div>

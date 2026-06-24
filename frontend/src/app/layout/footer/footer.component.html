@@ -1,0 +1,36 @@
+<footer class="footer">
+  <div class="container footer__grid">
+    <div class="footer__brand">
+      <h2 class="headline-md">BuildPro</h2>
+      <p class="body-md text-muted">{{ t('footer.tagline') }}</p>
+    </div>
+    <div>
+      <h4 class="label-md">{{ t('footer.buyers') }}</h4>
+      <ul>
+        <li><a routerLink="/catalog">{{ t('footer.catalog') }}</a></li>
+        <li><a routerLink="/catalog">{{ t('footer.promo') }}</a></li>
+        <li><a href="#">{{ t('footer.delivery') }}</a></li>
+        <li><a href="#">{{ t('footer.returns') }}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4 class="label-md">{{ t('footer.company') }}</h4>
+      <ul>
+        <li><a href="#">{{ t('footer.about') }}</a></li>
+        <li><a routerLink="/admin">Админ-панель</a></li>
+        <li><a href="#">{{ t('footer.stores') }}</a></li>
+      </ul>
+    </div>
+    <div class="footer__newsletter">
+      <h4 class="label-md">{{ t('footer.newsletter') }}</h4>
+      <p class="body-md text-muted">{{ t('footer.newsletterHint') }}</p>
+      <form class="footer__form">
+        <input class="input" type="email" [placeholder]="t('footer.emailPlaceholder')" />
+        <button type="submit" class="btn btn--primary">{{ t('footer.subscribe') }}</button>
+      </form>
+    </div>
+  </div>
+  <div class="container footer__bottom">
+    <span>© {{ currentYear }} BuildPro</span>
+  </div>
+</footer>

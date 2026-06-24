@@ -1,0 +1,21 @@
+<nav class="nav">
+  <div class="container nav__inner">
+    <ul class="nav__links">
+      <li>
+        <a routerLink="/catalog" class="nav__catalog-btn">
+          <span class="material-symbols-outlined">menu</span>
+          {{ t('nav.catalog') }}
+        </a>
+      </li>
+      @for (link of categoryLinks; track link.category) {
+        <li>
+          <a routerLink="/catalog" [queryParams]="{ category: link.category }">{{ t(link.key) }}</a>
+        </li>
+      }
+    </ul>
+    <div class="nav__promo">
+      <a routerLink="/catalog" [queryParams]="{ promo: '1' }" class="nav__promo-link">{{ t('nav.promo') }}</a>
+      <a routerLink="/catalog" [queryParams]="{ sale: '1' }" class="nav__sale-link">{{ t('nav.sale') }}</a>
+    </div>
+  </div>
+</nav>

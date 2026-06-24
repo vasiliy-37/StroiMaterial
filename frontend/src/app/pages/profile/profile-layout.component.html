@@ -1,0 +1,32 @@
+<div class="container page profile">
+  @if (!auth.isLoggedIn()) {
+    <div class="card profile__empty">
+      <p>Войдите, чтобы открыть профиль</p>
+      <a routerLink="/auth" class="btn btn--primary">Войти</a>
+    </div>
+  } @else {
+    <div class="profile__layout">
+      <aside class="profile__sidebar card">
+        @for (item of menu; track item.route) {
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="profile__menu-item--active"
+            [routerLinkActiveOptions]="{ exact: item.route === '/profile' }"
+            class="profile__menu-item"
+          >
+            <span class="material-symbols-outlined">{{ item.icon }}</span>
+            {{ t(item.labelKey) }}
+          </a>
+        }
+        <button type="button" class="profile__logout" (click)="logout()">
+          <span class="material-symbols-outlined">logout</span>
+          {{ t('profile.logout') }}
+        </button>
+      </aside>
+
+      <main class="profile__main">
+        <router-outlet />
+      </main>
+    </div>
+  }
+</div>

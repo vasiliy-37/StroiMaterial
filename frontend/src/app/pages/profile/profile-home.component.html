@@ -1,0 +1,32 @@
+<section class="profile__hero card">
+  <div class="profile__avatar">{{ initials() }}</div>
+  <div>
+    <h1 class="headline-lg">{{ displayName() }}</h1>
+    @if (auth.user()?.email) {
+      <p class="profile__email">{{ auth.user()?.email }}</p>
+    }
+  </div>
+</section>
+
+<section class="card profile__recent">
+  <div class="section-header">
+    <h2 class="headline-md">{{ t('profile.orders') }}</h2>
+    <a routerLink="/profile/orders" class="text-secondary label-md">{{ t('home.viewAll') }}</a>
+  </div>
+  @if (loadingOrders()) {
+    <p class="text-muted">Загрузка...</p>
+  } @else if (latestOrder(); as order) {
+    <a [routerLink]="['/profile/orders', order.id]" class="profile__order-preview">
+      <div>
+        <strong>№ {{ order.orderNumber }}</strong>
+        <p class="profile__order-meta">
+          {{ formatDate(order.createdAt) }} · {{ formatPrice(order.total) }}
+        </p>
+      </div>
+      <span class="profile__order-status">{{ statusLabel(order.status) }}</span>
+    </a>
+  } @else {
+    <p class="text-muted">Заказов пока нет</p>
+    <a routerLink="/catalog" class="btn btn--outline">{{ t('nav.catalog') }}</a>
+  }
+</section>

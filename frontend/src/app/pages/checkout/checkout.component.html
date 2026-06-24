@@ -1,0 +1,110 @@
+<div class="container page checkout">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <a routerLink="/cart">{{ t('nav.cart') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ t('checkout.title') }}</span>
+  </nav>
+
+  <h1 class="headline-xl">{{ t('checkout.title') }}</h1>
+
+  @if (submitError()) {
+    <div class="alert-banner alert-banner--error" role="alert">{{ submitError() }}</div>
+  }
+
+  <div class="checkout__layout">
+    <div class="checkout__form">
+      <section class="card checkout__section">
+        <h2 class="headline-md">{{ t('checkout.delivery') }}</h2>
+        <label class="checkout__option">
+          <input type="radio" name="delivery" value="courier" [(ngModel)]="delivery" />
+          <div>
+            <strong>Курьером</strong>
+            <p class="text-muted">2–3 дня, бесплатно от 30 000₽</p>
+          </div>
+        </label>
+        <label class="checkout__option">
+          <input type="radio" name="delivery" value="pickup" [(ngModel)]="delivery" />
+          <div>
+            <strong>Самовывоз</strong>
+            <p class="text-muted">Сегодня, магазин на Невском</p>
+          </div>
+        </label>
+        <div class="checkout__fields">
+          <input class="input" [placeholder]="t('checkout.city')" [(ngModel)]="city" name="city" />
+          <div>
+            <input
+              class="input"
+              [class.input--error]="fieldErrors().address"
+              [placeholder]="t('checkout.address') + ' *'"
+              [(ngModel)]="address"
+              name="address"
+              (input)="fieldErrors.update((e) => ({ ...e, address: false }))"
+            />
+            @if (fieldErrors().address) {
+              <p class="field-error">{{ t('checkout.fieldRequired') }}</p>
+            }
+          </div>
+          <div>
+            <input
+              class="input"
+              [class.input--error]="fieldErrors().phone"
+              [placeholder]="t('checkout.phone') + ' *'"
+              [(ngModel)]="phone"
+              name="phone"
+              (input)="fieldErrors.update((e) => ({ ...e, phone: false }))"
+            />
+            @if (fieldErrors().phone) {
+              <p class="field-error">{{ t('checkout.fieldRequired') }}</p>
+            }
+          </div>
+        </div>
+      </section>
+
+      <section class="card checkout__section">
+        <h2 class="headline-md">{{ t('checkout.payment') }}</h2>
+        <label class="checkout__option">
+          <input type="radio" name="payment" value="card" [(ngModel)]="payment" />
+          <div><strong>Банковская карта</strong></div>
+        </label>
+        <label class="checkout__option">
+          <input type="radio" name="payment" value="cash" [(ngModel)]="payment" />
+          <div><strong>Наличными при получении</strong></div>
+        </label>
+        <label class="label-md">{{ t('checkout.comment') }}</label>
+        <textarea
+          class="input checkout__comment"
+          [(ngModel)]="comment"
+          name="comment"
+          rows="3"
+          [placeholder]="t('checkout.comment')"
+        ></textarea>
+      </section>
+    </div>
+
+    <aside class="card checkout__summary">
+      <h3 class="headline-md">{{ t('cart.total') }}</h3>
+      <div class="checkout__row">
+        <span>Товары</span>
+        <span>{{ total() | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+      </div>
+      <div class="checkout__row">
+        <span>Доставка</span>
+        <span class="text-secondary">Бесплатно</span>
+      </div>
+      <div class="checkout__total">
+        <span>{{ t('cart.total') }}</span>
+        <span class="headline-md">{{ total() | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+      </div>
+      <button type="button" class="btn btn--primary checkout__submit" [disabled]="submitting()" (click)="submit()">
+        @if (submitting()) {
+          <span class="spinner" aria-hidden="true"></span>
+          {{ t('checkout.submitting') }}
+        } @else {
+          {{ t('checkout.confirm') }}
+        }
+      </button>
+    </aside>
+  </div>
+</div>

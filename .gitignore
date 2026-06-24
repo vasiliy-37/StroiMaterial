@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+
+# Environment & secrets
+.env
+.env.local
+.env.*.local
+
+# Build output
+dist/
+tmp/
+out-tsc/
+bazel-out/
+
+# Angular
+.angular/
+
+# Prisma generated client (regenerated on install)
+backend/generated/
+
+# Logs & debug
+npm-debug.log*
+yarn-error.log*
+*.log
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history/
+
+# Test & coverage
+coverage/
+/connect.lock
+/libpeerconnection.log
+testem.log
+/typings
+
+# OS
+.DS_Store
+Thumbs.db

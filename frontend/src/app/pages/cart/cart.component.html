@@ -1,0 +1,97 @@
+<div class="container page cart-page">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ t('cart.title') }}</span>
+  </nav>
+
+  <h1 class="headline-xl">{{ t('cart.title') }}</h1>
+
+  @if (cartService.isGuestCart() && items().length > 0) {
+    <div class="cart-page__guest card">
+      <p>{{ t('cart.guestHint') }}</p>
+      <a routerLink="/auth" [queryParams]="{ returnUrl: '/checkout' }" class="btn btn--outline">
+        {{ t('cart.guestLogin') }}
+      </a>
+    </div>
+  }
+
+  @if (items().length === 0) {
+    <div class="empty-state card">
+      <span class="material-symbols-outlined">shopping_cart</span>
+      <h2 class="headline-md">{{ t('cart.empty') }}</h2>
+      <p>{{ t('cart.emptyHint') }}</p>
+      <a routerLink="/catalog" class="btn btn--primary">{{ t('nav.catalog') }}</a>
+    </div>
+  } @else {
+    <div class="cart-page__layout">
+      <div class="cart-page__items card">
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Товар</th>
+              <th>Кол-во</th>
+              <th>Цена</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of items(); track item.id) {
+              <tr>
+                <td class="cart-table__product">
+                  <app-product-image [src]="item.product.image" [alt]="itemName(item)" imgClass="cart-table__thumb" />
+                  <div>
+                    <a [routerLink]="['/product', item.productId]" class="cart-table__name">{{ itemName(item) }}</a>
+                    <button type="button" class="cart-table__remove text-error" [attr.aria-label]="t('cart.remove')" (click)="remove(item.id)">
+                      <span class="material-symbols-outlined">delete</span> Удалить
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div class="cart-table__qty">
+                    <button type="button" [attr.aria-label]="t('cart.decrease')" (click)="changeQty(item.id, item.quantity - 1)">−</button>
+                    <span>{{ item.quantity }}</span>
+                    <button type="button" [attr.aria-label]="t('cart.increase')" (click)="changeQty(item.id, item.quantity + 1)">+</button>
+                  </div>
+                </td>
+                <td class="cart-table__price">
+                  <strong>{{ item.lineTotal | currency:'RUB':'symbol-narrow':'1.0-0' }}</strong>
+                  @if (hasDiscount(item)) {
+                    <span class="text-muted cart-table__unit-price">
+                      {{ item.unitPrice | currency:'RUB':'symbol-narrow':'1.0-0' }} / шт
+                      <s>{{ item.product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</s>
+                    </span>
+                  } @else {
+                    <span class="text-muted">{{ item.product.price | currency:'RUB':'symbol-narrow':'1.0-0' }} / шт</span>
+                  }
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <aside class="cart-page__summary card">
+        <h3 class="headline-md">{{ t('cart.total') }}</h3>
+        <div class="cart-page__row">
+          <span>Товары ({{ items().length }})</span>
+          <span>{{ total() | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        <div class="cart-page__row">
+          <span>Доставка</span>
+          <span class="text-secondary">Бесплатно</span>
+        </div>
+        <div class="cart-page__total">
+          <span>{{ t('cart.total') }}</span>
+          <span class="headline-md">{{ total() | currency:'RUB':'symbol-narrow':'1.0-0' }}</span>
+        </div>
+        @if (auth.isLoggedIn()) {
+          <a routerLink="/checkout" class="btn btn--primary cart-page__checkout">{{ t('cart.checkout') }}</a>
+        } @else {
+          <a routerLink="/auth" [queryParams]="{ returnUrl: '/checkout' }" class="btn btn--primary cart-page__checkout">
+            {{ t('cart.guestLogin') }}
+          </a>
+        }
+      </aside>
+    </div>
+  }
+</div>

@@ -1,0 +1,121 @@
+.product-page__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  padding: 32px;
+  margin-bottom: 48px;
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.product-page__gallery {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 360px;
+
+  img {
+    max-height: 400px;
+    object-fit: contain;
+  }
+}
+
+.product-page__brand {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-secondary);
+}
+
+.product-page__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 12px 0;
+}
+
+.product-page__price-block {
+  margin: 16px 0;
+}
+
+.product-page__old-price {
+  font-size: 16px;
+  color: var(--color-on-surface-variant);
+  text-decoration: line-through;
+  margin-right: 12px;
+}
+
+.product-page__price {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.product-page__actions {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.product-page__add-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.product-page__fav-btn {
+  color: var(--color-on-surface-variant);
+}
+
+.product-page__specs {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-outline-variant);
+
+  dl {
+    margin: 16px 0 0;
+  }
+
+  div {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(197, 198, 205, 0.3);
+    font-size: 14px;
+  }
+
+  dt {
+    color: var(--color-on-surface-variant);
+  }
+
+  dd {
+    margin: 0;
+    font-weight: 600;
+    color: var(--color-primary);
+  }
+}
+
+.product-page__reviews {
+  margin-bottom: 48px;
+}
+
+.product-page__review {
+  padding: 24px;
+}
+
+.product-page__review-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.product-page__stars .material-symbols-outlined {
+  font-size: 16px;
+}

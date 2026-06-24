@@ -1,0 +1,165 @@
+<div class="container page catalog">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ pageTitle() }}</span>
+  </nav>
+
+  <div class="catalog__layout">
+    @if (filtersOpen()) {
+      <button type="button" class="catalog__backdrop" aria-label="Close filters" (click)="closeFilters()"></button>
+    }
+
+    <aside class="catalog__sidebar card" [class.catalog__sidebar--open]="filtersOpen()">
+      <div class="catalog__sidebar-mobile-head">
+        <h3 class="headline-md">{{ t('catalog.filters') }}</h3>
+        <button type="button" class="btn--icon" (click)="closeFilters()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="catalog__sidebar-head">
+        <h3 class="headline-md">{{ t('catalog.filters') }}</h3>
+        @if (hasActiveFilters()) {
+          <button type="button" class="catalog__reset" (click)="resetSidebarFilters()">
+            {{ t('catalog.resetFilters') }}
+          </button>
+        }
+      </div>
+
+      <div class="catalog__filter">
+        <p class="label-md">{{ t('catalog.price') }}</p>
+        <div class="catalog__price-inputs">
+          <input
+            class="input"
+            type="number"
+            [placeholder]="t('catalog.priceFrom')"
+            [value]="priceMin() ?? ''"
+            [min]="priceBounds().min"
+            [max]="priceBounds().max"
+            (change)="setPriceMin($any($event.target).value)"
+          />
+          <input
+            class="input"
+            type="number"
+            [placeholder]="t('catalog.priceTo')"
+            [value]="priceMax() ?? ''"
+            [min]="priceBounds().min"
+            [max]="priceBounds().max"
+            (change)="setPriceMax($any($event.target).value)"
+          />
+        </div>
+        @if (priceBounds().max > priceBounds().min) {
+          <input
+            type="range"
+            class="catalog__range"
+            [min]="priceBounds().min"
+            [max]="priceBounds().max"
+            [value]="priceMax() ?? priceBounds().max"
+            (input)="setPriceMaxFromSlider($any($event.target).value)"
+          />
+        }
+      </div>
+
+      <div class="catalog__filter">
+        <p class="label-md">{{ t('catalog.categories') }}</p>
+        @for (option of categoryOptions; track option.slug) {
+          <label class="checkbox-label">
+            <input
+              type="checkbox"
+              [checked]="selectedCategories().includes(option.slug)"
+              (change)="toggleCategory(option.slug)"
+            />
+            <span>{{ t(option.labelKey) }}</span>
+          </label>
+        }
+      </div>
+
+      @if (brandFacets().length) {
+        <div class="catalog__filter">
+          <p class="label-md">{{ t('catalog.brands') }}</p>
+          @for (facet of brandFacets(); track facet.brand) {
+            <label class="checkbox-label">
+              <input
+                type="checkbox"
+                [checked]="selectedBrands().includes(facet.brand)"
+                (change)="toggleBrand(facet.brand)"
+              />
+              <span>{{ facet.brand }} <span class="catalog__facet-count">({{ facet.count }})</span></span>
+            </label>
+          }
+        </div>
+      }
+
+      <div class="catalog__filter">
+        <label class="checkbox-label">
+          <input type="checkbox" [checked]="inStockOnly()" (change)="toggleInStock()" />
+          <span>{{ t('catalog.inStock') }}</span>
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" [checked]="saleOnly()" (change)="toggleSale()" />
+          <span>{{ t('catalog.onSale') }}</span>
+        </label>
+      </div>
+
+      <button type="button" class="btn btn--primary catalog__apply" (click)="applyFilters()">
+        {{ t('catalog.applyFilters') }}
+      </button>
+    </aside>
+
+    <div class="catalog__main">
+      <div class="catalog__toolbar">
+        <div>
+          <h1 class="headline-lg">{{ pageTitle() }}</h1>
+          @if (!store.loading() && sortedProducts().length) {
+            <p class="catalog__count text-muted">
+              {{ sortedProducts().length }} {{ t('catalog.results') }}
+            </p>
+          }
+        </div>
+        <div class="catalog__toolbar-actions">
+          <button type="button" class="btn btn--outline catalog__filters-btn" (click)="openFilters()">
+            <span class="material-symbols-outlined">tune</span>
+            {{ t('catalog.showFilters') }}
+          </button>
+          <select
+            class="input catalog__sort"
+            [value]="sortBy()"
+            (change)="setSort($any($event.target).value)"
+            [attr.aria-label]="t('catalog.sort')"
+          >
+            @for (option of sortOptions; track option.value) {
+              <option [value]="option.value">{{ t(option.labelKey) }}</option>
+            }
+          </select>
+        </div>
+      </div>
+      <div class="grid-products">
+        @if (store.loading()) {
+          @for (_ of [1, 2, 3, 4, 5, 6]; track $index) {
+            <app-product-card-skeleton />
+          }
+        } @else if (!sortedProducts().length) {
+          <div class="empty-state card">
+            @if (!store.products().length) {
+              <p>{{ t('catalog.emptyAdmin') }}</p>
+              @if (auth.isAdmin()) {
+                <a routerLink="/admin" class="btn btn--outline">Админка</a>
+              }
+            } @else if (hasActiveFilters() || selectedCategories().length || saleOnly() || promoOnly()) {
+              <p>{{ t('catalog.noFilterResults') }}</p>
+              <button type="button" class="btn btn--outline" (click)="resetSidebarFilters()">
+                {{ t('catalog.resetFilters') }}
+              </button>
+            } @else {
+              <p>В этой категории пока нет товаров.</p>
+            }
+          </div>
+        } @else {
+          @for (product of sortedProducts(); track product.id) {
+            <app-product-card [product]="product" />
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

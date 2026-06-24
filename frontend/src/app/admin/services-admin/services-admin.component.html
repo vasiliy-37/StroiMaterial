@@ -1,0 +1,42 @@
+<div class="admin-page">
+  <div class="admin-page__head">
+    <h1 class="headline-lg">Услуги</h1>
+    <button type="button" class="btn btn--primary" (click)="startAdd()">+ Добавить услугу</button>
+  </div>
+
+  @if (showForm()) {
+    <div class="card admin-form">
+      <h2 class="headline-md">{{ editing() ? 'Редактировать' : 'Новая услуга' }}</h2>
+      <div class="admin-form__grid">
+        <label>Заголовок (RU)<input class="input" [ngModel]="form().titleRu" (ngModelChange)="patch('titleRu', $event)" /></label>
+        <label>Заголовок (EN)<input class="input" [ngModel]="form().titleEn" (ngModelChange)="patch('titleEn', $event)" /></label>
+        <label>Описание (RU)<input class="input" [ngModel]="form().descRu" (ngModelChange)="patch('descRu', $event)" /></label>
+        <label>Описание (EN)<input class="input" [ngModel]="form().descEn" (ngModelChange)="patch('descEn', $event)" /></label>
+        <label>Иконка
+          <select class="input" [ngModel]="form().icon" (ngModelChange)="patch('icon', $event)">
+            @for (ic of icons; track ic) { <option [value]="ic">{{ ic }}</option> }
+          </select>
+        </label>
+        <label class="admin-form__check"><input type="checkbox" [ngModel]="form().active" (ngModelChange)="patch('active', $event)" /> Активна</label>
+      </div>
+      <div class="admin-form__actions">
+        <button type="button" class="btn btn--primary" (click)="save()">Сохранить</button>
+        <button type="button" class="btn btn--outline" (click)="showForm.set(false)">Отмена</button>
+      </div>
+    </div>
+  }
+
+  <div class="admin-cards">
+    @for (s of store.allServices(); track s.id) {
+      <div class="card admin-card-item">
+        <span class="material-symbols-outlined text-secondary">{{ s.icon }}</span>
+        <h3>{{ s.titleRu }}</h3>
+        <p class="text-muted">{{ s.descRu }}</p>
+        <div class="admin-card-item__actions">
+          <button type="button" class="btn btn--outline" (click)="startEdit(s)">Изменить</button>
+          <button type="button" class="btn--icon" (click)="remove(s.id)"><span class="material-symbols-outlined">delete</span></button>
+        </div>
+      </div>
+    }
+  </div>
+</div>

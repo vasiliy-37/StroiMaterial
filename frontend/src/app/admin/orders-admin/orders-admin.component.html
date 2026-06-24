@@ -1,0 +1,68 @@
+<div class="admin-page">
+  <div class="admin-page__head">
+    <h1 class="headline-lg">Заказы</h1>
+    <button type="button" class="btn btn--outline" (click)="load()" [disabled]="loading()">
+      Обновить
+    </button>
+  </div>
+
+  @if (error()) {
+    <p class="text-error">{{ error() }}</p>
+  }
+
+  @if (loading()) {
+    <p class="text-muted">Загрузка...</p>
+  } @else if (!orders().length) {
+    <div class="card admin-empty">
+      <p class="text-muted">Заказов пока нет</p>
+    </div>
+  } @else {
+    <div class="admin-table-wrap card">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Номер</th>
+            <th>Дата</th>
+            <th>Сумма</th>
+            <th>Адрес</th>
+            <th>Телефон</th>
+            <th>Статус</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (order of orders(); track order.id) {
+            <tr>
+              <td>
+                <strong>{{ order.orderNumber }}</strong>
+                <div class="text-muted admin-table__meta">{{ order.items.length }} поз.</div>
+              </td>
+              <td>{{ formatDate(order.createdAt) }}</td>
+              <td>{{ order.total | currency:'RUB':'symbol-narrow':'1.0-0' }}</td>
+              <td>{{ order.address || '—' }}</td>
+              <td>{{ order.phone || '—' }}</td>
+              <td>
+                <select
+                  class="input admin-table__status"
+                  [ngModel]="order.status"
+                  [disabled]="updatingId() === order.id"
+                  (ngModelChange)="updateStatus(order, $event)"
+                >
+                  @for (status of statuses; track status) {
+                    <option [value]="status">{{ statusLabel(status) }}</option>
+                  }
+                </select>
+              </td>
+            </tr>
+            @if (order.comment) {
+              <tr class="admin-table__comment-row">
+                <td colspan="6">
+                  <span class="text-muted">Комментарий:</span> {{ order.comment }}
+                </td>
+              </tr>
+            }
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+</div>

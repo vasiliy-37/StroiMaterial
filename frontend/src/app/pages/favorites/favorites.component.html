@@ -1,0 +1,24 @@
+<div class="container page">
+  <nav class="breadcrumbs">
+    <a routerLink="/">{{ t('nav.home') }}</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span class="current">{{ t('favorites.title') }}</span>
+  </nav>
+
+  <h1 class="headline-xl">{{ t('favorites.title') }}</h1>
+
+  @if (products().length) {
+    <div class="grid-products" style="margin-top: 32px">
+      @for (product of products(); track product.id) {
+        <app-product-card [product]="product" />
+      }
+    </div>
+  } @else {
+    <div class="empty-state card">
+      <span class="material-symbols-outlined">favorite</span>
+      <h2>{{ t('favorites.empty') }}</h2>
+      <p>{{ t('favorites.emptyHint') }}</p>
+      <a routerLink="/catalog" class="btn btn--primary">{{ t('home.toCatalog') }}</a>
+    </div>
+  }
+</div>
