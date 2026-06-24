@@ -71,8 +71,8 @@ export const routes: Routes = [
     ],
   },
 
-  { path: 'orders', redirectTo: 'profile/orders', pathMatch: 'full' },
-  { path: 'orders/:id', redirectTo: 'profile/orders/:id' },
+  { path: 'orders', redirectTo: '/profile/orders', pathMatch: 'full' },
+  { path: 'orders/:id', redirectTo: '/profile/orders/:id', pathMatch: 'full' },
 
   { path: 'auth', component: AuthComponent, data: { minimalLayout: true } },
 
